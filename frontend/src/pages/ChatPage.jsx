@@ -168,9 +168,14 @@ export default function OpenWebUIClone() {
     if (!file || !currentChatId) return;
   
     try {
-      const result = await fileUpload(currentChatId, file);
-      console.log("Upload success:", result);
-      setMessages((prev) => [...prev, { from: "assistant", text: reply.reply }]);
+      const reply = await fileUpload(currentChatId, file);
+      setMessages((prev) => [
+        ...prev,
+        { from: "user", text: `${file.name}]` }
+      ]);
+      console.log("Upload success:", reply);
+      setMessages((prev) => [...prev, { from: "assistant", text: reply.reply }
+      ]);
     } catch (err) {
       console.error("Upload failed:", err);
     }

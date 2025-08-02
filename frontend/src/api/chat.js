@@ -122,12 +122,6 @@ export const fileUpload = async (chatId, file) => {
           "Content-Type": "multipart/form-data",
           Authorization: `Bearer ${token}`,
         },
-        onUploadProgress: (progressEvent) => {
-          if (onProgress) {
-            const percent = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-            onProgress(percent);
-          }
-        },
       }
     );
   

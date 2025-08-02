@@ -1,7 +1,9 @@
 import os
 from uuid import uuid4
 from fastapi.responses import FileResponse
-from requests import Session
+from langchain_core.messages import HumanMessage
+from langchain_ollama import ChatOllama
+from requests import Session, request
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy import func
 from app.database import get_db
@@ -54,11 +56,28 @@ async def upload_file(chat_id: int,
     db.commit()
     db.refresh(file_message)
 
-    return {
-        "message": "File uploaded successfully",
-        "file_path": file_location,
-        "message_id": file_message.id
-    }
+    # Prepare input for LLM
+    file_summary_prompt = f"The user uploaded a file named '{file.filename}'. Please respond accordingly."
+    messages = [HumanMessage(content=file_summary_prompt)]
+
+    # Send message to the LLM
+    llm = ChatOllama(
+        model="llama3:8b",
+        temperature=0.7
+    )
+    llm_response = llm.invoke(messages).content
+
+    # Save bot's response
+    bot_message = models.Message(
+        chat_id=chat.id,
+        sender="assistant",
+        content=llm_response,
+    )
+    db.add(bot_message)
+    chat.updated_at = func.now()
+    db.commit()
+
+    return {"reply": llm_response}
 
 @router.get("/files/{file_id}")
 async def get_file(file_id: int,
