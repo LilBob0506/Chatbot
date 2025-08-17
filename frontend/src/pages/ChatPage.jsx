@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { sendMessage, createChat, fetchChats, fetchChat, deleteChat, updateChat, fileUpload } from '../api/chat';
+// import Vapi from "@vapi-ai/web";
 
 export default function OpenWebUIClone() {
   const [messages, setMessages] = useState([]);
@@ -193,6 +194,48 @@ export default function OpenWebUIClone() {
     navigate("/");                             
   };
 
+  const VoiceChatButton = () => {
+    const [isTalking, setIsTalking] = useState(false);
+    const vapiRef = useRef(null);
+  
+    const startSession = async () => {
+      if (!vapiRef.current) {
+        vapiRef.current = new Vapi({
+          apiKey: process.env.REACT_APP_VAPI_API_KEY, // store in .env
+        });
+      }
+  
+      setIsTalking(true);
+  
+      await vapiRef.current.start({
+        assistantId: process.env.REACT_APP_VAPI_ASSISTANT_ID,
+      });
+  
+      vapiRef.current.on("speech-start", () => {
+        console.log("AI started speaking");
+      });
+  
+      vapiRef.current.on("speech-end", () => {
+        console.log("AI stopped speaking");
+      });
+  
+      vapiRef.current.on("transcript", (msg) => {
+        console.log("User said:", msg.text);
+      });
+  
+      vapiRef.current.on("message", (msg) => {
+        console.log("AI replied:", msg.text);
+      });
+    };
+  
+    const stopSession = async () => {
+      if (vapiRef.current) {
+        await vapiRef.current.stop();
+      }
+      setIsTalking(false);
+    };
+  }  
+
   return (
     <div className="flex h-screen w-screen bg-gray-900">
 
@@ -340,46 +383,54 @@ export default function OpenWebUIClone() {
         </div>
 
         {/* Input Area */}
-<div className="p-4 bg-gray-800 border-t border-gray-700">
-  <div className="max-w-4xl mx-auto">
-    <div className="flex items-center space-x-2">
+        <div className="p-4 bg-gray-800 border-t border-gray-700">
+          <div className="max-w-4xl mx-auto">
+            <div className="flex items-center space-x-2">
 
-      {/* Upload Button */}
-      <label className="relative cursor-pointer bg-gray-700 hover:bg-gray-600 text-white p-3 rounded-md text-sm flex items-center justify-center h-10">
-        📁
-        <input
-          type="file"
-          onChange={handleFileUpload}
-          className="absolute inset-0 opacity-0 cursor-pointer"
-        />
-      </label>
-      
-      {/* Text Input Area */}
-      <div className="flex-1 relative">
-        <textarea
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          className="w-full bg-gray-700 text-white border border-gray-600 rounded-lg p-3 pr-12 resize-none focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-          placeholder="Send a message..."
-          rows="1"
-          onKeyDown={handleKeyDown}
-        />
+              {/* Upload Button */}
+              <label className="relative cursor-pointer bg-gray-700 hover:bg-gray-600 text-white p-3 rounded-md text-sm flex items-center justify-center h-10">
+                📁
+                <input
+                  type="file"
+                  onChange={handleFileUpload}
+                  className="absolute inset-0 opacity-0 cursor-pointer"
+                />
+              </label>
 
-        {/* Send Button */}
-        <button
-          onClick={handleSend}
-          disabled={!input.trim()}
-          className="absolute right-2 bottom-2 w-8 h-10 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white rounded-md flex items-center justify-center transition-colors"
-        >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
-          </svg>
-        </button>
-      </div>
+              {/* Voice Chat Button */}
+              <button
+                onClick={() => VoiceChatButton()}
+                className="bg-gray-700 hover:bg-gray-600 text-white p-3 rounded-md text-sm flex items-center justify-center h-10"
+                >
+                  🎤
+                </button>
+              
+              {/* Text Input Area */}
+              <div className="flex-1 relative">
+                <textarea
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  className="w-full bg-gray-700 text-white border border-gray-600 rounded-lg p-3 pr-12 resize-none focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                  placeholder="Send a message..."
+                  rows="1"
+                  onKeyDown={handleKeyDown}
+                />
 
-    </div>
-  </div>
-</div>
+                {/* Send Button */}
+                <button
+                  onClick={handleSend}
+                  disabled={!input.trim()}
+                  className="absolute right-2 bottom-2 w-8 h-10 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white rounded-md flex items-center justify-center transition-colors"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                  </svg>
+                </button>
+              </div>
+
+            </div>
+          </div>
+        </div>
 
       </main>
     </div>
