@@ -15,6 +15,18 @@ export async function loginUser(email, password) {
   return response.data;
 }
 
+export async function registerUser(email, password) {
+
+  const response = await axios.post(`${API_BASE_URL}/users`, {
+    email,
+    password,
+  });
+
+  // Store token in localStorage
+  localStorage.setItem("access_token", response.data.access_token);
+  return response.data;
+}
+
 export function getAccessToken() {
   return localStorage.getItem("access_token");
 }

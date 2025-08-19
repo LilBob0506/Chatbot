@@ -1,12 +1,12 @@
 from fastapi import status, HTTPException, Depends, APIRouter
 from sqlalchemy.orm import Session
-
-from app.oauth2 import get_current_user
+from app.oauth2 import create_access_token, create_refresh_token, get_current_user
 from .. import models, schemas, utils
 from ..database import get_db
 
-
 router = APIRouter(tags=['Users'])
+
+REFRESH_TOKENS = set()
 
 @router.post("/users", status_code=status.HTTP_201_CREATED)
 def create_user(user: schemas.UserCreate, 
@@ -28,7 +28,16 @@ def create_user(user: schemas.UserCreate,
     db.commit()
     db.refresh(new_user)
 
-    return {"detail": "User registered successfully"}
+    access_token = create_access_token({"sub": user.email})
+    refresh_token = create_refresh_token({"sub": user.email})
+
+    # Store refresh token
+    REFRESH_TOKENS.add(refresh_token)
+
+    return {
+        "access_token": access_token,
+        "refresh_token": refresh_token
+    }
 
 @router.get("/users/me", response_model=schemas.UserOut)
 def get_current_user_details(db: Session = Depends(get_db),

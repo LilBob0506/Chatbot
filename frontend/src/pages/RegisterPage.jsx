@@ -1,28 +1,20 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { loginUser } from "../api/auth";
+import { registerUser } from "../api/auth";
 
-export default function LoginPage() {
+export default function RegisterPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
-  // Check if user is already logged in
-  useEffect(() => {
-    const token = localStorage.getItem("access_token");
-    if (token) {
-      navigate("/chat");
-    }
-  }, [navigate]);
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await loginUser(email, password); // Call backend
-      navigate("/chat"); // Navigate to chat page after login
+      await registerUser(email, password); // Call backend
+      navigate("/chat"); // Navigate to chat page after registration
     } catch (err) {
       console.error(err);
-      alert("Login failed");
+      alert("Registeration failed");
     }
   };
 
@@ -33,7 +25,7 @@ export default function LoginPage() {
         className="bg-black p-8 rounded-lg shadow-md w-full max-w-sm"
       >
         <h2 className="text-2xl font-bold text-center mb-6 text-white">
-          Sign In to S-Chatbot
+            Register to S-Chatbot
         </h2>
         <input
           type="email"
@@ -55,13 +47,16 @@ export default function LoginPage() {
           type="submit"
           className="bg-blue-600 hover:bg-blue-700 text-white font-semibold w-full py-3 rounded transition-colors"
         >
-          Login
+          Register
         </button>
         <div className="text-center mt-4 text-white">
-        Don't have an account?{" "}
-          <a href="/users" className="text-blue-500 hover:underline">
-            Sign Up
-          </a>
+          Already have an account?{" "}
+          <span
+            className="text-blue-500 cursor-pointer hover:underline"
+            onClick={() => navigate("/")}
+          >
+            Sign In
+          </span>
         </div>
       </form>
     </div>
