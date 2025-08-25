@@ -1,5 +1,6 @@
 {
   "dependencies": {
-    "@vapi-ai/web": "^2.3.8"
+    "@vapi-ai/web": "^2.3.8",
+    "lucide-react": "^0.540.0"
   }
 }

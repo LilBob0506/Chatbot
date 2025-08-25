@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+// import { User } from 'lucide-react'; // nice icon set
 import { sendMessage, createChat, fetchChats, fetchChat, deleteChat, updateChat, fileUpload } from '../api/chat';
 // import Vapi from "@vapi-ai/web";
 
