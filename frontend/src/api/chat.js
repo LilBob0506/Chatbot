@@ -48,7 +48,7 @@ export const createChat = async () => {
     const token = localStorage.getItem("access_token");
   
     try {
-      const res = await fetch("${API_BASE_URL}/chats", {
+      const res = await fetch("${API_BASE}/chats", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
