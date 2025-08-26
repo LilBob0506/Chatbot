@@ -1,6 +1,8 @@
 import axios from "axios";
 
-const API_URL = "http://localhost:8000"; // Add backend proxy/CORS later
+// const API_URL = "http://localhost:8000"; // Add backend proxy/CORS later
+// const API_URL = "https://chatbot-9hch.onrender.com"; // your Render URL
+
 
 // export const loginUser = (email, password) =>
 //   axios.post(`${API_URL}/login`, { email, password });

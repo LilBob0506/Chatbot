@@ -1,6 +1,7 @@
 import axios from "axios";
 
-const API_BASE = "http://localhost:8000";
+// const API_BASE = "http://localhost:8000";
+const API_BASE = "https://chatbot-9hch.onrender.com"; // your Render URL
 
 export const sendMessage = async (chatId, message) => {
     const token = localStorage.getItem("access_token");
