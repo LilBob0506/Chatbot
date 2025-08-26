@@ -1,8 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-// import { User } from 'lucide-react'; // nice icon set
 import { sendMessage, createChat, fetchChats, fetchChat, deleteChat, updateChat, fileUpload } from '../api/chat';
-// import Vapi from "@vapi-ai/web";
 
 export default function OpenWebUIClone() {
   const [messages, setMessages] = useState([]);
@@ -195,48 +193,6 @@ export default function OpenWebUIClone() {
     navigate("/");                             
   };
 
-  const VoiceChatButton = () => {
-    const [isTalking, setIsTalking] = useState(false);
-    const vapiRef = useRef(null);
-  
-    const startSession = async () => {
-      if (!vapiRef.current) {
-        vapiRef.current = new Vapi({
-          apiKey: process.env.REACT_APP_VAPI_API_KEY, // store in .env
-        });
-      }
-  
-      setIsTalking(true);
-  
-      await vapiRef.current.start({
-        assistantId: process.env.REACT_APP_VAPI_ASSISTANT_ID,
-      });
-  
-      vapiRef.current.on("speech-start", () => {
-        console.log("AI started speaking");
-      });
-  
-      vapiRef.current.on("speech-end", () => {
-        console.log("AI stopped speaking");
-      });
-  
-      vapiRef.current.on("transcript", (msg) => {
-        console.log("User said:", msg.text);
-      });
-  
-      vapiRef.current.on("message", (msg) => {
-        console.log("AI replied:", msg.text);
-      });
-    };
-  
-    const stopSession = async () => {
-      if (vapiRef.current) {
-        await vapiRef.current.stop();
-      }
-      setIsTalking(false);
-    };
-  }  
-
   return (
     <div className="flex h-screen w-screen bg-gray-900">
 
@@ -397,14 +353,6 @@ export default function OpenWebUIClone() {
                   className="absolute inset-0 opacity-0 cursor-pointer"
                 />
               </label>
-
-              {/* Voice Chat Button */}
-              <button
-                onClick={() => VoiceChatButton()}
-                className="bg-gray-700 hover:bg-gray-600 text-white p-3 rounded-md text-sm flex items-center justify-center h-10"
-                >
-                  🎤
-                </button>
               
               {/* Text Input Area */}
               <div className="flex-1 relative">

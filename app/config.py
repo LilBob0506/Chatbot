@@ -10,8 +10,6 @@ class Settings(BaseSettings):
     algorithm: str
     access_token_expire_minutes: int
     refresh_token_expire_days: int
-    react_app_vapi_api_key: str
-    react_app_vapi_assistant_id: str
 
     class Config:
         env_file = ".env"
