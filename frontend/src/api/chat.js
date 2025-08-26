@@ -17,18 +17,22 @@ export const sendMessage = async (chatId, message) => {
     return res.data;
   };
 
-export const fetchChats = async () => {
-  const token = localStorage.getItem("access_token");
-  const res = await fetch("http://localhost:8000/chats", {
-      headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-
-  if (!res.ok) throw new Error("Failed to fetch chats");
-
-  return res.json();
-};  
+  export const fetchChats = async () => {
+    const token = localStorage.getItem("access_token");
+  
+    try {
+      const res = await axios.get(`${API}/chats`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+  
+      return res.data; // Axios stores the response body in res.data
+    } catch (error) {
+      console.error("Failed to fetch chats:", error);
+      throw new Error("Failed to fetch chats");
+    }
+  };  
 
 export const fetchChat = async (chatId) => {
     const token = localStorage.getItem("access_token");
