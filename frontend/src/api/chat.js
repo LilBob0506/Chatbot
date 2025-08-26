@@ -48,20 +48,18 @@ export const createChat = async () => {
     const token = localStorage.getItem("access_token");
   
     try {
-      const res = await fetch(`${API_BASE}/chats`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`, 
-        },
-      });
+      const res = await axios.post(
+        `${API}/chats`,
+        {}, // Axios needs a body; empty object since your fetch had no body
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
   
-      if (!res.ok) {
-        throw new Error("Failed to create chat");
-      }
-  
-      const newChat = await res.json();
-      return newChat;
+      return res.data; // Axios puts the response body in res.data
     } catch (error) {
       console.error("Error creating chat:", error);
       throw error;
