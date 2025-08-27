@@ -7,12 +7,6 @@ Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
-app.include_router(auth.router)
-app.include_router(chat.router)
-app.include_router(user.router)
-app.include_router(file.router)
-app.include_router(messages.router)
-
 # Allow your frontend domain
 origins = [
     "https://chatbot-three-green-40.vercel.app",  # your Vercel frontend
@@ -26,3 +20,10 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+app.include_router(auth.router)
+app.include_router(chat.router)
+app.include_router(user.router)
+app.include_router(file.router)
+app.include_router(messages.router)
+
