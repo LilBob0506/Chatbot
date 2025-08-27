@@ -1,7 +1,7 @@
 import axios from "axios";
 
-// const API_BASE = "http://localhost:8000";
-const API_BASE = "https://chatbot-9hch.onrender.com"; // your Render URL
+const API_BASE = "http://localhost:8000";
+// const API_BASE = "https://chatbot-9hch.onrender.com"; // your Render URL
 
 export const sendMessage = async (chatId, message) => {
     const token = localStorage.getItem("access_token");
@@ -19,25 +19,22 @@ export const sendMessage = async (chatId, message) => {
 
   export const fetchChats = async () => {
     const token = localStorage.getItem("access_token");
-  
-    try {
-      const res = await axios.get(`${API}/chats`, {
+
+    const res = await fetch(`${API_BASE}/chats`, {
         headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+        Authorization: `Bearer ${token}`,
+      },
+    });
   
-      return res.data; // Axios stores the response body in res.data
-    } catch (error) {
-      console.error("Failed to fetch chats:", error);
-      throw new Error("Failed to fetch chats");
-    }
-  };  
+    if (!res.ok) throw new Error("Failed to fetch chats");
+  
+    return res.json();
+  };
 
 export const fetchChat = async (chatId) => {
     const token = localStorage.getItem("access_token");
 
-    const res = await fetch(`http://localhost:8000/chats/${chatId}`, {
+    const res = await fetch(`${API_BASE}/chats/${chatId}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -48,22 +45,24 @@ export const fetchChat = async (chatId) => {
     return res.json(); // includes messages
   };
 
-export const createChat = async () => {
+  export const createChat = async () => {
     const token = localStorage.getItem("access_token");
   
     try {
-      const res = await axios.post(
-        `${API}/chats`,
-        {}, // Axios needs a body; empty object since your fetch had no body
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const res = await fetch(`${API_BASE}/chats`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
   
-      return res.data; // Axios puts the response body in res.data
+      if (!res.ok) {
+        throw new Error("Failed to create chat");
+      }
+  
+      const newChat = await res.json();
+      return newChat;
     } catch (error) {
       console.error("Error creating chat:", error);
       throw error;
@@ -73,7 +72,7 @@ export const createChat = async () => {
 export async function deleteChat(chatId) {
     const token = localStorage.getItem("access_token");
   
-    const res = await fetch(`http://127.0.0.1:8000/chats/${chatId}`, {
+    const res = await fetch(`${API_BASE}/chats/${chatId}`, {
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -91,7 +90,7 @@ export const updateChat = async (chatId, newTitle) => {
     const token = localStorage.getItem("access_token");
   
     try {
-      const res = await fetch(`http://localhost:8000/chats/${chatId}`, {
+      const res = await fetch(`${API_BASE}/chats/${chatId}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",

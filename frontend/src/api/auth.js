@@ -1,8 +1,8 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
 
-// const API_BASE_URL = "http://127.0.0.1:8000"; // FastAPI backend
-const API_BASE_URL = "https://chatbot-9hch.onrender.com"; // your Render URL
+const API_BASE_URL = "http://127.0.0.1:8000"; // FastAPI backend
+// const API_BASE_URL = "https://chatbot-9hch.onrender.com"; // your Render URL
 
 export async function loginUser(email, password) {
 
