@@ -13,10 +13,15 @@ app.include_router(user.router)
 app.include_router(file.router)
 app.include_router(messages.router)
 
+# Allow your frontend domain
+origins = [
+    "https://chatbot-three-green-40.vercel.app",  # your Vercel frontend
+    "http://localhost:5173",                      # local dev (Vite default)
+]
+
 app.add_middleware(
     CORSMiddleware,
-    # allow_origins=["http://localhost:5173"],  # React dev server
-    allow_origins=["*"],  # Allow all origins
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
