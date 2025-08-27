@@ -1,5 +1,6 @@
 from requests import Session, request
 from langchain_ollama import ChatOllama
+from langchain_openai import ChatOpenAI
 from langchain_core.messages import HumanMessage, SystemMessage
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy import func
@@ -8,6 +9,7 @@ from ..oauth2 import get_current_user
 from ..schemas import ChatRequest, ChatUpdate
 from .. import models
 from app import schemas
+import os
 
 router = APIRouter(tags=['Chat'])
 
@@ -40,9 +42,10 @@ def chat(request: ChatRequest, chat_id: int,
     db.commit()
 
     # Send message to the LLM
-    llm = ChatOllama(
-        model="llama3:8b",
-        temperature=0.7
+    llm = ChatOpenAI(
+        model="gpt-4o-mini",
+        temperature=0.7,
+        api_key=os.getenv("OPENAI_API_KEY")
     )
     messages = [HumanMessage(request.message)]
     llm_response = llm.invoke(messages).content
